@@ -55,7 +55,13 @@ func main() {
 		sum := 1
 		for sum < 2 {
 			// in loop will want to check for tasking from s3 (can manage this with an external script and just have this look for the local file of hashcat.externalsignal and process that as needed?) - this is a future development
-			io.WriteString(stdinIn, "s")
+			if _, err := os.Stat("./hashwrap.pause"); err == nil {
+				io.WriteString(stdinIn, "c")
+			} else if os.IsNotExist(err) {
+				io.WriteString(stdinIn, "s")
+			} else {
+				io.WriteString(stdinIn, "s")
+			}
 			//data := strings.Split(stdoutBuf.String(), "\n")
 			d1 := stdoutBuf.Bytes()
 			ioutil.WriteFile("./hashcat.status", d1, 0644)
